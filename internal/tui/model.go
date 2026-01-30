@@ -1,17 +1,8 @@
-package main
+package tui
 
 import (
-	"fmt"
-	"os"
-
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
-)
-
-var (
-	greyStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color("204"))
-	typedStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color("111"))
-	cursorStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("222"))
+    "fmt"
+    tea "github.com/charmbracelet/bubbletea"
 )
 
 type model struct {
@@ -20,7 +11,7 @@ type model struct {
 	typed  string
 }
 
-func initialModel() model {
+func InitialModel() model {
 	return model{
 		target: "Hey, do you want to eat pizza today?",
 		typed:  "",
@@ -30,6 +21,7 @@ func initialModel() model {
 func (m model) Init() tea.Cmd {
 	return tea.EnterAltScreen
 }
+
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
@@ -68,23 +60,13 @@ func (m model) View() string {
 	}
 	s := "Type to learn!\n\n"
 
-	completed := typedStyle.Render(m.target[:m.cursor])
-	cursorChar := cursorStyle.Render(string(m.target[m.cursor]))
-	remaining := greyStyle.Render(m.target[m.cursor+1:])
+	completed := TypedStyle.Render(m.target[:m.cursor])
+	cursorChar := CursorStyle.Render(string(m.target[m.cursor]))
+	remaining := GreyStyle.Render(m.target[m.cursor+1:])
 
 	s += fmt.Sprintf("%s[%s]%s\n", completed, cursorChar, remaining)
 
 	s += "\nPress q to quit.\n"
 
 	return s
-}
-
-func main() {
-	p := tea.NewProgram(initialModel())
-
-	if _, err := p.Run(); err != nil {
-		fmt.Printf("Alas, there's been an error: %v", err)
-		os.Exit(1)
-	}
-
 }
