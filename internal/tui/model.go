@@ -4,6 +4,8 @@ import (
 	"fmt"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/erwaen/type-glish/internal/llm"
+	"math/rand/v2"
+	"github.com/erwaen/type-glish/internal/targets"
 )
 
 type WordMsg string
@@ -17,8 +19,11 @@ type Model struct {
 }
 
 func InitialModel() Model {
+
+	randomIndex:= rand.IntN(len(targets.StartupExamples)	)
+	randomTarget:= targets.StartupExamples[randomIndex]
 	return Model{
-		Target: "Hey, do you want to eat pizza today?",
+		Target: randomTarget,
 		Typed:  "",
 	}
 }
@@ -107,7 +112,7 @@ func (m Model) View() string {
     remaining := GreyStyle.Render(rest)
 
     s += fmt.Sprintf("%s[%s]%s\n", completed, cursorChar, remaining)
-    s += "\nPress q to quit.\n"
+    s += "\nPress ctrl+c to quit.\n"
 
     return s
 }
