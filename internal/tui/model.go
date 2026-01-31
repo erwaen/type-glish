@@ -6,6 +6,7 @@ import (
 	"github.com/erwaen/type-glish/internal/llm"
 	"math/rand/v2"
 	"github.com/erwaen/type-glish/internal/targets"
+	"strings"
 )
 
 type WordMsg string
@@ -111,7 +112,8 @@ func (m Model) View() string {
     cursorChar := CursorStyle.Render(string(m.Target[m.Cursor]))
     remaining := GreyStyle.Render(rest)
 
-    s += fmt.Sprintf("%s[%s]%s\n", completed, cursorChar, remaining)
+    s += fmt.Sprintf("%s%s%s\n", completed, cursorChar, remaining)
+		s += fmt.Sprintf("%s\n",strings.Repeat(" ",m.Cursor)+"^")
     s += "\nPress ctrl+c to quit.\n"
 
     return s
