@@ -100,7 +100,7 @@ func (m Model) View() string {
         )
     }
 
-    s := "Type to learn!\n\n"
+    s := "\n Type to learn!\n\n"
     
     // Slice safety check
     rest := ""
@@ -112,9 +112,9 @@ func (m Model) View() string {
     cursorChar := CursorStyle.Render(string(m.Target[m.Cursor]))
     remaining := GreyStyle.Render(rest)
 
-    s += fmt.Sprintf("%s%s%s\n", completed, cursorChar, remaining)
-		s += fmt.Sprintf("%s\n",strings.Repeat(" ",m.Cursor)+"^")
-    s += "\nPress ctrl+c to quit.\n"
+    s += fmt.Sprintf(" %s%s%s\n", completed, cursorChar, remaining)
+		s += fmt.Sprintf(" %s\n",strings.Repeat(" ",m.Cursor)+"^")
+    s += "\n Press ctrl+c to quit.\n"
 
     return s
 }

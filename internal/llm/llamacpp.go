@@ -62,6 +62,10 @@ func parseLLMResponse(resp *http.Response, err error) (string, error){
     // Sometimes LLMs add quotes even when told not to, handle that safely
     cleanText = strings.Trim(cleanText, "\"")
 
+    cleanText = strings.ReplaceAll(cleanText, "’", "'")
+    
+    cleanText = strings.ReplaceAll(cleanText, "‘", "'")
+
 		return cleanText, nil
 }
 
