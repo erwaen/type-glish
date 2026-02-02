@@ -13,10 +13,10 @@ const (
 	serverURL = "http://127.0.0.1:8080/v1/chat/completions"
 )
 
-type LlamaProvider struct{}
+type LlamaCppProvider struct{}
 
-func NewLlamaProvider() *LlamaProvider {
-	return &LlamaProvider{}
+func NewLlamaCppProvider() *LlamaCppProvider {
+	return &LlamaCppProvider{}
 }
 
 type chatRequest struct {
@@ -70,7 +70,7 @@ func parseLLMResponse(resp *http.Response, err error) (string, error) {
 }
 
 // Call sends a request to the local LLM
-func (p *LlamaProvider) Call(messages []ChatMessage) (string, error) {
+func (p *LlamaCppProvider) Call(messages []ChatMessage) (string, error) {
 	reqBody := chatRequest{
 		Messages:    messages,
 		Temperature: 0.7,

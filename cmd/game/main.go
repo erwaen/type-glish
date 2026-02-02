@@ -2,23 +2,33 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/erwaen/type-glish/internal/config"
 	"github.com/erwaen/type-glish/internal/game"
-	"github.com/erwaen/type-glish/internal/states"
 	"github.com/erwaen/type-glish/internal/tui"
 )
 
 func main() {
-	ctx := game.NewContext()
+	f, err := tea.LogToFile("debug.log", "debug")
+	if err != nil {
+		fmt.Println("fatal:", err)
+		os.Exit(1)
+	}
+	defer f.Close()
 
-	// Initial Narrative
-	initialState := &states.NarrativeState{
-		Content: "You find yourself at the gates of the City of Syntax. A Guard blocks your path.\n\n\"Halt! State your business, traveler,\" he grunts. His club looks heavy, like a dangling participle.",
+	// Load Configuration
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		log.Printf("Error loading config: %v\n", err)
+		os.Exit(1)
 	}
 
-	m := tui.NewModel(ctx, initialState)
+	ctx := game.NewContext(cfg)
+
+	m := tui.NewModel(ctx, cfg)
 	p := tea.NewProgram(m)
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)

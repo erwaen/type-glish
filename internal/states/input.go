@@ -44,5 +44,6 @@ func (s *InputState) View(ctx *game.Context) string {
 	return ui.Box("YOUR ACTION",
 		"Describe your action in English:\n\n"+
 			s.textInput.View(),
+		true,
 	)
 }

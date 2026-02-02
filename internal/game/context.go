@@ -1,6 +1,12 @@
 package game
 
-import "github.com/erwaen/type-glish/internal/llm"
+import (
+	"context"
+	"fmt"
+
+	"github.com/erwaen/type-glish/internal/config"
+	"github.com/erwaen/type-glish/internal/llm"
+)
 
 type PlayerStats struct {
 	HP         int
@@ -18,9 +24,33 @@ type Context struct {
 	LLMClient      *llm.Client
 }
 
-func NewContext() *Context {
-	return &Context{
-		Stats:     PlayerStats{HP: 100, Level: 1},
-		LLMClient: llm.NewClient(),
+func NewContext(cfg *config.Config) *Context {
+	ctx := &Context{
+		Stats: PlayerStats{HP: 100, Level: 1},
 	}
+	ctx.ReloadLLM(cfg)
+	return ctx
+}
+
+// ReloadLLM recreates the LLM client based on the provided config
+func (c *Context) ReloadLLM(cfg *config.Config) {
+	var provider llm.Provider
+	var err error
+
+	if cfg.Provider == "gemini" {
+		if cfg.GeminiAPIKey == "" {
+			fmt.Println("Warning: GEMINI_API_KEY not set, falling back to llamacpp")
+			provider = llm.NewLlamaCppProvider()
+		} else {
+			provider, err = llm.NewGeminiProvider(context.Background(), cfg.GeminiAPIKey, cfg.GeminiModel)
+			if err != nil {
+				fmt.Printf("Error initializing Gemini: %v. Falling back to llamacpp\n", err)
+				provider = llm.NewLlamaCppProvider()
+			}
+		}
+	} else {
+		provider = llm.NewLlamaCppProvider()
+	}
+
+	c.LLMClient = llm.NewClient(provider)
 }
