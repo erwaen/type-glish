@@ -26,12 +26,7 @@ func (s NarrativeState) Update(msg tea.Msg, ctx *game.Context) (GameState, tea.C
 }
 
 func (s NarrativeState) View(ctx *game.Context) string {
-	// Narrative Text Styling
-	// We could add some wrapping manually if lipgloss width isn't enough,
-	// but StyleBox has width set.
-
-	// Footer hint can be separate or inside
 	hint := ui.StyleHelp.Render("Press [Enter] to take action... (Ctrl+S for Settings)")
 
-	return ui.Box("DUNGEON MASTER", s.Content+"\n\n"+hint, true)
+	return ui.CenteredView("DUNGEON MASTER", s.Content+"\n\n"+hint, true, ctx.Width, ctx.Height)
 }

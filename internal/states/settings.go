@@ -79,5 +79,5 @@ func (s *SettingsState) View(ctx *game.Context) string {
 
 	content += ui.StyleHelp.Render("\n(Use ↑/↓ to move, Enter to select, q to quit)")
 
-	return ui.Box("SETTINGS", content, true)
+	return ui.CenteredView("SETTINGS", content, true, ctx.Width, ctx.Height)
 }

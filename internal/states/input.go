@@ -46,10 +46,7 @@ func (s *InputState) View(ctx *game.Context) string {
 		narrative = ctx.CurrentNarrative + "\n\n---\n\n"
 	}
 
-	return ui.Box("YOUR ACTION",
-		narrative+
-			"Describe your action in English:\n\n"+
-			s.textInput.View(),
-		true,
-	)
+	content := narrative + "Describe your action in English:\n\n" + s.textInput.View()
+
+	return ui.CenteredView("YOUR ACTION", content, true, ctx.Width, ctx.Height)
 }

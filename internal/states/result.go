@@ -44,15 +44,12 @@ func (s *ResultState) View(ctx *game.Context) string {
 	scoreStyle := lipgloss.NewStyle().Foreground(scoreColor).Bold(true)
 	scoreText := scoreStyle.Render(fmt.Sprintf("%d/10", a.GrammarScore))
 
-	// The original content string construction is replaced by a direct call to ui.Box
-	// with a new content format and an additional 'true' parameter.
-	return ui.Box("ASSESSMENT",
-		a.OutcomeDescription+
-			"\n\n"+
-			fmt.Sprintf("Score: %s  |  Damage: %d", scoreText, a.DamageDealt)+
-			"\n"+
-			a.DMComment+
-			"\n\nPress [Enter] to continue...",
-		true,
-	)
+	content := a.OutcomeDescription +
+		"\n\n" +
+		fmt.Sprintf("Score: %s  |  Damage: %d", scoreText, a.DamageDealt) +
+		"\n" +
+		a.DMComment +
+		"\n\nPress [Enter] to continue..."
+
+	return ui.CenteredView("ASSESSMENT", content, true, ctx.Width, ctx.Height)
 }

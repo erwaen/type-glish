@@ -23,6 +23,10 @@ type Context struct {
 	LastAssessment   llm.Assessment // structure result from the llm
 	CurrentNarrative string         // The current story text displayed to the user
 	LLMClient        *llm.Client
+
+	// Terminal dimensions
+	Width  int
+	Height int
 }
 
 func NewContext(cfg *config.Config) *Context {

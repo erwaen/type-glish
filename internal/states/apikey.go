@@ -71,9 +71,6 @@ func (s *APIInputState) Update(msg tea.Msg, ctx *game.Context) (GameState, tea.C
 }
 
 func (s *APIInputState) View(ctx *game.Context) string {
-	return ui.Box("GEMINI SETUP",
-		"To use Gemini, we need an API Key.\nIt will be saved locally.\n\n"+
-			s.textInput.View(),
-		true,
-	)
+	content := "To use Gemini, we need an API Key.\nIt will be saved locally.\n\n" + s.textInput.View()
+	return ui.CenteredView("GEMINI SETUP", content, true, ctx.Width, ctx.Height)
 }

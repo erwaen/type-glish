@@ -65,5 +65,6 @@ func (s *ProcessingState) Update(msg tea.Msg, ctx *game.Context) (GameState, tea
 
 func (s ProcessingState) View(ctx *game.Context) string {
 	spin := s.spinner.View()
-	return ui.Box("THINKING...", fmt.Sprintf("%s The Dungeon Master is judging your grammar...", spin), true)
+	content := fmt.Sprintf("%s The Dungeon Master is judging your grammar...", spin)
+	return ui.CenteredView("THINKING...", content, true, ctx.Width, ctx.Height)
 }

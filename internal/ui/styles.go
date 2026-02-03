@@ -16,7 +16,7 @@ var (
 	ColorWarning    = lipgloss.Color("#FFB86C") // Orange
 
 	// Layout
-	WidthMain = 80
+	WidthMain = 70
 
 	// Styles
 	StyleBase = lipgloss.NewStyle().
@@ -26,7 +26,7 @@ var (
 	StyleBox = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
 			BorderForeground(ColorSecondary).
-			Padding(1, 2).
+			Padding(1, 3).
 			Width(WidthMain)
 
 	StyleBoxActive = StyleBox.
@@ -57,7 +57,7 @@ var (
 			MarginTop(1)
 )
 
-// Box returns a styled string with a title and content
+// Box returns a styled box with a title and content
 func Box(title string, content string, isActive bool) string {
 	boxStyle := StyleBox
 	if isActive {
@@ -69,6 +69,19 @@ func Box(title string, content string, isActive bool) string {
 			StyleTitle.Render(title),
 			"\n"+content,
 		),
+	)
+}
+
+// CenteredView centers a box in the terminal
+func CenteredView(title string, content string, isActive bool, width, height int) string {
+	box := Box(title, content, isActive)
+
+	// Center horizontally and vertically
+	return lipgloss.Place(
+		width, height,
+		lipgloss.Center, lipgloss.Center,
+		box,
+		lipgloss.WithWhitespaceBackground(ColorBackground),
 	)
 }
 

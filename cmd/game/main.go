@@ -26,13 +26,13 @@ func main() {
 		log.Printf("Error loading config: %v\n", err)
 		os.Exit(1)
 	}
-	
+
 	// creates the game data and setup the llm provider
 	ctx := game.NewContext(cfg)
-	
+
 	// set a new model and the current state of the game, so menu
 	m := tui.NewModel(ctx, cfg)
-	p := tea.NewProgram(m)
+	p := tea.NewProgram(m, tea.WithAltScreen())
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
 		os.Exit(1)

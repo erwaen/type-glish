@@ -29,6 +29,12 @@ func (m MainModel) Init() tea.Cmd {
 }
 
 func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	// Handle window resize
+	if sizeMsg, ok := msg.(tea.WindowSizeMsg); ok {
+		m.ctx.Width = sizeMsg.Width
+		m.ctx.Height = sizeMsg.Height
+	}
+
 	// Global Key Bindings
 	if keyMsg, ok := msg.(tea.KeyMsg); ok {
 		if keyMsg.String() == "ctrl+s" {
