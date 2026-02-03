@@ -7,6 +7,7 @@ import (
 	"github.com/erwaen/type-glish/internal/ui"
 )
 
+// MenuState is the Main Menu (Start Game, Settings)
 type MenuState struct {
 	choices []string
 	cursor  int
@@ -15,7 +16,7 @@ type MenuState struct {
 
 func NewMenuState(cfg *config.Config) *MenuState {
 	return &MenuState{
-		choices: []string{"Use llama.cpp (Local)", "Use Gemini (Cloud)", "Update Gemini API Key"},
+		choices: []string{"Start Game", "Settings"},
 		cursor:  0,
 		cfg:     cfg,
 	}
@@ -41,21 +42,17 @@ func (s *MenuState) Update(msg tea.Msg, ctx *game.Context) (GameState, tea.Cmd) 
 			}
 		case "enter":
 			if s.cursor == 0 {
-				// Llama
-				s.cfg.Provider = "llamacpp"
-				config.SaveConfig(s.cfg)
-				return &NarrativeState{}, nil
-			} else if s.cursor == 1 {
-				// Gemini
-				if s.cfg.GeminiAPIKey == "" {
+				// Start Game
+				if s.cfg.Provider == "" {
+					return NewSettingsState(s.cfg), nil
+				}
+				if s.cfg.Provider == "gemini" && s.cfg.GeminiAPIKey == "" {
 					return NewAPIInputState(s.cfg), nil
 				}
-				s.cfg.Provider = "gemini"
-				config.SaveConfig(s.cfg)
 				return &NarrativeState{}, nil
-			} else if s.cursor == 2 {
-				// Update Gemini Key
-				return NewAPIInputState(s.cfg), nil
+			} else if s.cursor == 1 {
+				// Settings
+				return NewSettingsState(s.cfg), nil
 			}
 		}
 	}
@@ -65,8 +62,7 @@ func (s *MenuState) Update(msg tea.Msg, ctx *game.Context) (GameState, tea.Cmd) 
 func (s *MenuState) View(ctx *game.Context) string {
 	var content string
 
-	// Add description
-	content += ui.StyleSubTitle.Render("Select your Intelligence Provider") + "\n\n"
+	content += ui.StyleSubTitle.Render("Welcome to Type-Glish") + "\n\n"
 
 	for i, choice := range s.choices {
 		content += ui.RenderMenuItem(choice, s.cursor == i) + "\n"
@@ -74,7 +70,5 @@ func (s *MenuState) View(ctx *game.Context) string {
 
 	content += ui.StyleHelp.Render("\n(Use ↑/↓ to move, Enter to select, q to quit)")
 
-	// Centering or just box
-	// Using Box with active state
-	return ui.Box("CONFIGURATION", content, true)
+	return ui.Box("MAIN MENU", content, true)
 }

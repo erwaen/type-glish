@@ -58,9 +58,8 @@ func (s *APIInputState) Update(msg tea.Msg, ctx *game.Context) (GameState, tea.C
 				// or just do it here:
 				// ctx.ReloadLLM(s.cfg) -> We need to implement this method on Context.
 
-				// Returning to Menu or starting the game?
-				// Let's go to Narrative (Start Game).
-				return &NarrativeState{}, nil
+				// Returning to Settings
+				return NewSettingsState(s.cfg), nil
 			}
 		case tea.KeyCtrlC, tea.KeyEsc:
 			return s, tea.Quit

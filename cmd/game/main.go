@@ -12,6 +12,7 @@ import (
 )
 
 func main() {
+	// Because tea doesn't now allow me to see prints, I can store in a file to check it
 	f, err := tea.LogToFile("debug.log", "debug")
 	if err != nil {
 		fmt.Println("fatal:", err)
@@ -25,9 +26,11 @@ func main() {
 		log.Printf("Error loading config: %v\n", err)
 		os.Exit(1)
 	}
-
+	
+	// creates the game data and setup the llm provider
 	ctx := game.NewContext(cfg)
-
+	
+	// set a new model and the current state of the game, so menu
 	m := tui.NewModel(ctx, cfg)
 	p := tea.NewProgram(m)
 	if _, err := p.Run(); err != nil {
