@@ -20,9 +20,12 @@ func (s *ResultState) Update(msg tea.Msg, ctx *game.Context) (GameState, tea.Cmd
 	case tea.KeyMsg:
 		if msg.String() == "enter" {
 			// Update Context Stats or History here if needed
+			// Update current narrative for next turn
+			ctx.CurrentNarrative = ctx.LastAssessment.OutcomeDescription
+
 			// For now, loop back to Narrative with the outcome
 			nextNarrative := &NarrativeState{
-				Content: ctx.LastAssessment.OutcomeDescription,
+				Content: ctx.CurrentNarrative,
 			}
 			return nextNarrative, nil
 		}

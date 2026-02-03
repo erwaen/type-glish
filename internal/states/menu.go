@@ -49,7 +49,10 @@ func (s *MenuState) Update(msg tea.Msg, ctx *game.Context) (GameState, tea.Cmd) 
 				if s.cfg.Provider == "gemini" && s.cfg.GeminiAPIKey == "" {
 					return NewAPIInputState(s.cfg), nil
 				}
-				return &NarrativeState{}, nil
+
+				// Initialize the game with a static intro
+				ctx.CurrentNarrative = "You find yourself standing before the ancient Gates of Grammar. A heavy mist swirls around your ankles, and the faint sound of dangling participles echoes in the distance. The path ahead is treacherous, guarded by the Syntax Sentinels."
+				return &NarrativeState{Content: ctx.CurrentNarrative}, nil
 			} else if s.cursor == 1 {
 				// Settings
 				return NewSettingsState(s.cfg), nil

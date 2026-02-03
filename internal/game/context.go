@@ -17,11 +17,12 @@ type PlayerStats struct {
 }
 
 type Context struct {
-	Stats          PlayerStats
-	History        []llm.ChatMessage
-	LastInput      string
-	LastAssessment llm.Assessment // structure result from the llm
-	LLMClient      *llm.Client
+	Stats            PlayerStats
+	History          []llm.ChatMessage
+	LastInput        string
+	LastAssessment   llm.Assessment // structure result from the llm
+	CurrentNarrative string         // The current story text displayed to the user
+	LLMClient        *llm.Client
 }
 
 func NewContext(cfg *config.Config) *Context {

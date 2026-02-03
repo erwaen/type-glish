@@ -22,8 +22,7 @@ func (s *ProcessingState) Init(ctx *game.Context) tea.Cmd {
 	s.spinner.Spinner = spinner.Dot
 	s.spinner.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
 
-	// 1. Start the Spinner
-	// 2. Fire off the LLM analysis command
+	// Fire off the LLM analysis command
 	return tea.Batch(
 		s.spinner.Tick,
 		func() tea.Msg {

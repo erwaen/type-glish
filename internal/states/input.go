@@ -41,8 +41,14 @@ func (s *InputState) Update(msg tea.Msg, ctx *game.Context) (GameState, tea.Cmd)
 }
 
 func (s *InputState) View(ctx *game.Context) string {
+	narrative := ""
+	if ctx.CurrentNarrative != "" {
+		narrative = ctx.CurrentNarrative + "\n\n---\n\n"
+	}
+
 	return ui.Box("YOUR ACTION",
-		"Describe your action in English:\n\n"+
+		narrative+
+			"Describe your action in English:\n\n"+
 			s.textInput.View(),
 		true,
 	)
