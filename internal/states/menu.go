@@ -1,6 +1,8 @@
 package states
 
 import (
+	"fmt"
+
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/erwaen/type-glish/internal/config"
 	"github.com/erwaen/type-glish/internal/game"
@@ -43,16 +45,26 @@ func (s *MenuState) Update(msg tea.Msg, ctx *game.Context) (GameState, tea.Cmd) 
 		case "enter":
 			if s.cursor == 0 {
 				// Start Game
-				if s.cfg.Provider == "" {
+				if s.cfg != nil && s.cfg.Provider == "" {
 					return NewSettingsState(s.cfg), nil
 				}
-				if s.cfg.Provider == "gemini" && s.cfg.GeminiAPIKey == "" {
+				if s.cfg != nil && s.cfg.Provider == "gemini" && s.cfg.GeminiAPIKey == "" {
 					return NewAPIInputState(s.cfg), nil
 				}
 
-				// Initialize the game with a static intro
-				ctx.CurrentNarrative = "You find yourself standing before the ancient Gates of Grammar. A heavy mist swirls around your ankles, and the faint sound of dangling participles echoes in the distance. The path ahead is treacherous, guarded by the Syntax Sentinels."
-				return &NarrativeState{Content: ctx.CurrentNarrative}, nil
+				// Reset player stats for new game
+				ctx.Stats.HP = 100
+				ctx.Stats.XP = 0
+
+				// Spawn first enemy
+				ctx.CurrentEnemy = game.RandomEnemy()
+				ctx.CurrentNarrative = fmt.Sprintf(
+					"You enter the Kingdom of Lexicon, where words have power. A %s blocks your path! %s",
+					ctx.CurrentEnemy.Name,
+					ctx.CurrentEnemy.Description,
+				)
+
+				return NewCombatState(), nil
 			} else if s.cursor == 1 {
 				// Settings
 				return NewSettingsState(s.cfg), nil
@@ -66,6 +78,8 @@ func (s *MenuState) View(ctx *game.Context) string {
 	var content string
 
 	content += ui.StyleSubTitle.Render("Welcome to Type-Glish") + "\n\n"
+	content += "A grammar-powered dungeon crawler where\n"
+	content += "your English skills are your weapon!\n\n"
 
 	for i, choice := range s.choices {
 		content += ui.RenderMenuItem(choice, s.cursor == i) + "\n"
@@ -73,5 +87,5 @@ func (s *MenuState) View(ctx *game.Context) string {
 
 	content += ui.StyleHelp.Render("\n(Use ↑/↓ to move, Enter to select, q to quit)")
 
-	return ui.CenteredView("MAIN MENU", content, true, ctx.Width, ctx.Height)
+	return ui.CenteredView("⚔ TYPE-GLISH ⚔", content, true, ctx.Width, ctx.Height)
 }

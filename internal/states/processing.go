@@ -20,7 +20,7 @@ type ProcessingState struct {
 func (s *ProcessingState) Init(ctx *game.Context) tea.Cmd {
 	s.spinner = spinner.New()
 	s.spinner.Spinner = spinner.Dot
-	s.spinner.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
+	s.spinner.Style = lipgloss.NewStyle().Foreground(ui.ColorPrimary)
 
 	// Fire off the LLM analysis command
 	return tea.Batch(

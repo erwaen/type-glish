@@ -1,5 +1,5 @@
 run:
-	go run ./cmd/app
+	go run ./cmd/game
 
 build:
-	go build -o bin/type-glish ./cmd/app
+	go build -o bin/type-glish ./cmd/game

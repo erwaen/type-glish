@@ -20,9 +20,17 @@ type Context struct {
 	Stats            PlayerStats
 	History          []llm.ChatMessage
 	LastInput        string
-	LastAssessment   llm.Assessment // structure result from the llm
-	CurrentNarrative string         // The current story text displayed to the user
+	LastAssessment   llm.Assessment       // structure result from the llm
+	CombatAssessment llm.CombatAssessment // combat-specific result from the llm
+	CurrentNarrative string               // The current story text displayed to the user
 	LLMClient        *llm.Client
+
+	// Combat state
+	CurrentEnemy *Enemy
+	Location     string
+
+	// Error tracking (for display)
+	LastError string
 
 	// Terminal dimensions
 	Width  int

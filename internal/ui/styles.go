@@ -1,19 +1,23 @@
 package ui
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/charmbracelet/lipgloss"
 )
 
 var (
-	ColorPrimary    = lipgloss.Color("#FF79C6") // Pink
-	ColorSecondary  = lipgloss.Color("#BD93F9") // Purple
-	ColorTertiary   = lipgloss.Color("#8BE9FD") // Cyan
-	ColorBackground = lipgloss.Color("#282A36") // Dark Grey
-	ColorText       = lipgloss.Color("#F8F8F2") // White
-	ColorSubtext    = lipgloss.Color("#6272A4") // Greyish Blue
-	ColorSuccess    = lipgloss.Color("#50FA7B") // Green
-	ColorError      = lipgloss.Color("#FF5555") // Red
-	ColorWarning    = lipgloss.Color("#FFB86C") // Orange
+	// Dark fantasy color palette
+	ColorPrimary    = lipgloss.Color("#C9A227") // Gold/amber
+	ColorSecondary  = lipgloss.Color("#7A7A7A") // Steel grey
+	ColorTertiary   = lipgloss.Color("#A0A0A0") // Light grey
+	ColorBackground = lipgloss.Color("#1A1A1A") // Near black
+	ColorText       = lipgloss.Color("#E0E0E0") // Off-white
+	ColorSubtext    = lipgloss.Color("#666666") // Dim grey
+	ColorSuccess    = lipgloss.Color("#4A9F4A") // Muted green
+	ColorError      = lipgloss.Color("#A03030") // Dark red
+	ColorWarning    = lipgloss.Color("#B87333") // Copper/bronze
 
 	// Layout
 	WidthMain = 70
@@ -43,7 +47,7 @@ var (
 			Italic(true)
 
 	StyleSelected = lipgloss.NewStyle().
-			Foreground(ColorSuccess).
+			Foreground(ColorPrimary).
 			Bold(true).
 			SetString("> ")
 
@@ -55,6 +59,22 @@ var (
 			Foreground(ColorSubtext).
 			Italic(true).
 			MarginTop(1)
+
+	StyleDamageDealt = lipgloss.NewStyle().
+				Foreground(ColorSuccess).
+				Bold(true)
+
+	StyleDamageReceived = lipgloss.NewStyle().
+				Foreground(ColorError).
+				Bold(true)
+
+	StyleEnemyName = lipgloss.NewStyle().
+			Foreground(ColorError).
+			Bold(true)
+
+	StyleLocation = lipgloss.NewStyle().
+			Foreground(ColorWarning).
+			Italic(true)
 )
 
 // Box returns a styled box with a title and content
@@ -91,4 +111,44 @@ func RenderMenuItem(text string, selected bool) string {
 		style = StyleSelected
 	}
 	return style.Render(text)
+}
+
+// RenderHPBar renders an HP bar with filled and empty segments
+func RenderHPBar(current, max int, label string, barWidth int) string {
+	if max <= 0 {
+		max = 1
+	}
+	if current < 0 {
+		current = 0
+	}
+	if current > max {
+		current = max
+	}
+
+	percent := float64(current) / float64(max)
+	filled := int(percent * float64(barWidth))
+	empty := barWidth - filled
+
+	// Choose color based on HP percentage
+	barColor := ColorSuccess
+	if percent <= 0.25 {
+		barColor = ColorError
+	} else if percent <= 0.5 {
+		barColor = ColorWarning
+	}
+
+	filledStyle := lipgloss.NewStyle().Foreground(barColor)
+	emptyStyle := lipgloss.NewStyle().Foreground(ColorSubtext)
+
+	bar := filledStyle.Render(strings.Repeat("█", filled)) +
+		emptyStyle.Render(strings.Repeat("░", empty))
+
+	return fmt.Sprintf("[%s]: %s (%d%%)", label, bar, int(percent*100))
+}
+
+// RenderCombatHeader renders the location and enemy info header
+func RenderCombatHeader(location, enemyName string) string {
+	loc := StyleLocation.Render(location)
+	enemy := StyleEnemyName.Render(enemyName)
+	return fmt.Sprintf("LOCATION: %s    ENEMY: %s", loc, enemy)
 }
