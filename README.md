@@ -4,9 +4,7 @@ A terminal RPG where your English skills are your weapon. You fight monsters by 
 
 Built for people who want to practice English in a less boring way (well, I'm trying not to be boring).
 
-![Combat](images/Pasted%20image.png)
-
-![Combat Result](images/Pasted%20image%20(2).png)
+![Demo](images/ezgif-8aa6514e55c5bd8b.gif)
 
 ## Features
 
