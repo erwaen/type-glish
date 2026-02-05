@@ -1,6 +1,6 @@
 ./type-glish
 type-glish
-# If you prefer the allow list template instead of the deny list, see community template:
+# If you prefer the allow list template instead of the deny list, see community templatejG:
 # https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
 #
 # Binaries for programs and plugins
@@ -35,3 +35,5 @@ go.work.sum
 
 debug.log
 bin/game
+
+CLAUDE.md

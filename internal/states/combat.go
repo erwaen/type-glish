@@ -59,15 +59,17 @@ func (s *CombatState) View(ctx *game.Context) string {
 	// Build combat view
 	var content string
 
+	// Status bar at top
+	content += ui.RenderStatusBar(ctx.Stats.HP, 100, ctx.Stats.Gold, ctx.Stats.XP) + "\n\n"
+
 	// Header: Location and Enemy
 	content += ui.RenderCombatHeader(enemy.Location, enemy.Name) + "\n\n"
 
+	// Enemy HP Bar
+	content += ui.RenderHPBar(enemy.HP, enemy.MaxHP, enemy.Name, 20) + "\n\n"
+
 	// DM Description
 	content += ui.StyleSubTitle.Render("DM: "+enemy.Description) + "\n\n"
-
-	// HP Bars
-	content += ui.RenderHPBar(enemy.HP, enemy.MaxHP, enemy.Name+" HP", 20) + "\n"
-	content += ui.RenderHPBar(ctx.Stats.HP, 100, "Your HP", 20) + "\n\n"
 
 	// Narrative context if any
 	if ctx.CurrentNarrative != "" {
@@ -79,9 +81,9 @@ func (s *CombatState) View(ctx *game.Context) string {
 
 	// Input
 	content += "YOUR ACTION:\n"
-	content += "" + s.textInput.View() + "\n\n"
+	content += s.textInput.View() + "\n\n"
 
 	content += ui.StyleHelp.Render("(Type your combat action and press Enter)")
 
-	return ui.CenteredView("⚔ COMBAT ⚔", content, true, ctx.Width, ctx.Height)
+	return ui.CenteredView("COMBAT", content, true, ctx.Width, ctx.Height)
 }

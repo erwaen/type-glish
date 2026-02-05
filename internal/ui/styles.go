@@ -138,12 +138,51 @@ func RenderHPBar(current, max int, label string, barWidth int) string {
 	}
 
 	filledStyle := lipgloss.NewStyle().Foreground(barColor)
+	damagedStyle := lipgloss.NewStyle().Foreground(barColor).Faint(true)
 	emptyStyle := lipgloss.NewStyle().Foreground(ColorSubtext)
 
-	bar := filledStyle.Render(strings.Repeat("█", filled)) +
-		emptyStyle.Render(strings.Repeat("░", empty))
+	// Use different characters for visual feedback
+	bar := filledStyle.Render(strings.Repeat("█", filled))
+	if empty > 0 {
+		// Show first few empty as "damaged" (▓) and rest as truly empty (░)
+		damaged := min(empty, 2)
+		bar += damagedStyle.Render(strings.Repeat("▓", damaged))
+		bar += emptyStyle.Render(strings.Repeat("░", empty-damaged))
+	}
 
-	return fmt.Sprintf("[%s]: %s (%d%%)", label, bar, int(percent*100))
+	percentStyle := lipgloss.NewStyle().Bold(true).Foreground(barColor)
+	return fmt.Sprintf("[%s]: %s %s", label, bar, percentStyle.Render(fmt.Sprintf("(%d%%)", int(percent*100))))
+}
+
+// RenderStatusBar renders a compact status bar with HP, Gold, and XP
+func RenderStatusBar(hp, maxHP, gold, xp int) string {
+	// HP portion
+	percent := float64(hp) / float64(maxHP)
+	hpColor := ColorSuccess
+	if percent <= 0.25 {
+		hpColor = ColorError
+	} else if percent <= 0.5 {
+		hpColor = ColorWarning
+	}
+
+	hpStyle := lipgloss.NewStyle().Foreground(hpColor).Bold(true)
+	goldStyle := lipgloss.NewStyle().Foreground(ColorPrimary).Bold(true)
+	xpStyle := lipgloss.NewStyle().Foreground(ColorTertiary)
+	labelStyle := lipgloss.NewStyle().Foreground(ColorSubtext)
+
+	// Build compact HP bar (10 chars)
+	barWidth := 10
+	filled := int(percent * float64(barWidth))
+	empty := barWidth - filled
+
+	bar := hpStyle.Render(strings.Repeat("█", filled)) +
+		lipgloss.NewStyle().Foreground(ColorSubtext).Render(strings.Repeat("░", empty))
+
+	return fmt.Sprintf("%s %s %s  %s %s  %s %s",
+		labelStyle.Render("HP:"), bar, hpStyle.Render(fmt.Sprintf("%d/%d", hp, maxHP)),
+		labelStyle.Render("Gold:"), goldStyle.Render(fmt.Sprintf("%d", gold)),
+		labelStyle.Render("XP:"), xpStyle.Render(fmt.Sprintf("%d", xp)),
+	)
 }
 
 // RenderCombatHeader renders the location and enemy info header

@@ -55,6 +55,7 @@ func (s *MenuState) Update(msg tea.Msg, ctx *game.Context) (GameState, tea.Cmd) 
 				// Reset player stats for new game
 				ctx.Stats.HP = 100
 				ctx.Stats.XP = 0
+				ctx.Stats.Gold = 0
 
 				// Spawn first enemy
 				ctx.CurrentEnemy = game.RandomEnemy()

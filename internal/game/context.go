@@ -11,6 +11,7 @@ import (
 type PlayerStats struct {
 	HP         int
 	XP         int
+	Gold       int
 	Level      int
 	Vocabulary []string // words "collected"
 	Weaknesses []string // Grammar issues tracked

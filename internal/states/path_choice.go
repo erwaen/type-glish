@@ -89,6 +89,9 @@ func (s *PathChoiceState) Update(msg tea.Msg, ctx *game.Context) (GameState, tea
 func (s *PathChoiceState) View(ctx *game.Context) string {
 	var content string
 
+	// Status bar at top
+	content += ui.RenderStatusBar(ctx.Stats.HP, 100, ctx.Stats.Gold, ctx.Stats.XP) + "\n\n"
+
 	content += ui.StyleSubTitle.Render("You come to a crossroads...") + "\n\n"
 
 	content += "Choose your path:\n\n"
@@ -102,10 +105,9 @@ func (s *PathChoiceState) View(ctx *game.Context) string {
 	content += "Describe your choice in a complete sentence:\n"
 	content += "> " + s.textInput.View() + "\n\n"
 
-	content += ui.RenderHPBar(ctx.Stats.HP, 100, "Your HP", 20) + "\n\n"
 	content += ui.StyleHelp.Render("(Better grammar = more healing!)")
 
-	return ui.CenteredView("🛤 CROSSROADS 🛤", content, true, ctx.Width, ctx.Height)
+	return ui.CenteredView("CROSSROADS", content, true, ctx.Width, ctx.Height)
 }
 
 // PathProcessingState processes the path choice
@@ -227,7 +229,18 @@ func (s *PathResultState) View(ctx *game.Context) string {
 
 	content += s.outcome + "\n\n"
 
-	// Score and healing
+	// Score icons based on grammar score
+	var scoreIcons string
+	if s.score >= 9 {
+		scoreIcons = "★★★"
+	} else if s.score >= 7 {
+		scoreIcons = "★★☆"
+	} else if s.score >= 5 {
+		scoreIcons = "★☆☆"
+	} else {
+		scoreIcons = "☆☆☆"
+	}
+
 	scoreColor := ui.ColorError
 	if s.score >= 7 {
 		scoreColor = ui.ColorSuccess
@@ -238,14 +251,17 @@ func (s *PathResultState) View(ctx *game.Context) string {
 	scoreStyle := lipgloss.NewStyle().Foreground(scoreColor).Bold(true)
 	healStyle := lipgloss.NewStyle().Foreground(ui.ColorSuccess).Bold(true)
 
-	content += fmt.Sprintf("Grammar Score: %s\n", scoreStyle.Render(fmt.Sprintf("%d/10", s.score)))
-	content += fmt.Sprintf("Health Restored: %s\n\n", healStyle.Render(fmt.Sprintf("+%d", s.healing)))
+	content += fmt.Sprintf("Score: %s %s  |  Health Restored: %s\n\n",
+		scoreStyle.Render(fmt.Sprintf("%d/10", s.score)),
+		scoreStyle.Render(scoreIcons),
+		healStyle.Render(fmt.Sprintf("+%d", s.healing)))
 
 	content += ui.StyleSubTitle.Render("DM:") + " " + s.dmComment + "\n\n"
 
-	content += ui.RenderHPBar(ctx.Stats.HP, 100, "Your HP", 20) + "\n\n"
+	content += "───────────────────────────────────────────\n\n"
+	content += ui.RenderStatusBar(ctx.Stats.HP, 100, ctx.Stats.Gold, ctx.Stats.XP) + "\n\n"
 
 	content += ui.StyleHelp.Render("Press [Enter] to continue...")
 
-	return ui.CenteredView("🛤 PATH RESULT 🛤", content, true, ctx.Width, ctx.Height)
+	return ui.CenteredView("PATH RESULT", content, true, ctx.Width, ctx.Height)
 }

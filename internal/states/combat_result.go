@@ -60,7 +60,19 @@ func (s *CombatResultState) View(ctx *game.Context) string {
 	content += ui.StyleSubTitle.Render("RESULT:") + "\n"
 	content += a.Outcome + "\n\n"
 
-	// Damage dealt/received
+	// Score icons based on grammar score
+	var scoreIcons string
+	if a.GrammarScore >= 9 {
+		scoreIcons = "★★★"
+	} else if a.GrammarScore >= 7 {
+		scoreIcons = "★★☆"
+	} else if a.GrammarScore >= 5 {
+		scoreIcons = "★☆☆"
+	} else {
+		scoreIcons = "☆☆☆"
+	}
+
+	// Damage dealt/received colors
 	scoreColor := ui.ColorError
 	if a.GrammarScore >= 7 {
 		scoreColor = ui.ColorSuccess
@@ -72,15 +84,18 @@ func (s *CombatResultState) View(ctx *game.Context) string {
 	damageDealtStyle := lipgloss.NewStyle().Foreground(ui.ColorSuccess).Bold(true)
 	damageReceivedStyle := lipgloss.NewStyle().Foreground(ui.ColorError).Bold(true)
 
-	content += fmt.Sprintf("Grammar Score: %s\n", scoreStyle.Render(fmt.Sprintf("%d/10", a.GrammarScore)))
-	content += fmt.Sprintf("Damage Dealt: %s    Damage Received: %s\n\n",
-		damageDealtStyle.Render(fmt.Sprintf("-%d", a.DamageDealt)),
-		damageReceivedStyle.Render(fmt.Sprintf("-%d", a.DamageReceived)))
+	// Compact score and damage line
+	content += fmt.Sprintf("Score: %s %s  |  You dealt %s  |  You took %s\n\n",
+		scoreStyle.Render(fmt.Sprintf("%d/10", a.GrammarScore)),
+		scoreStyle.Render(scoreIcons),
+		damageDealtStyle.Render(fmt.Sprintf("%d dmg", a.DamageDealt)),
+		damageReceivedStyle.Render(fmt.Sprintf("%d dmg", a.DamageReceived)))
 
 	// DM Comment
 	content += ui.StyleSubTitle.Render("DM:") + " " + a.DMComment + "\n\n"
 
 	// Current HP status
+	content += "───────────────────────────────────────────\n\n"
 	if ctx.CurrentEnemy != nil {
 		content += ui.RenderHPBar(ctx.CurrentEnemy.HP, ctx.CurrentEnemy.MaxHP, ctx.CurrentEnemy.Name, 15) + "\n"
 	}
@@ -94,7 +109,7 @@ func (s *CombatResultState) View(ctx *game.Context) string {
 
 	content += ui.StyleHelp.Render("Press [Enter] to continue...")
 
-	return ui.CenteredView("⚔ COMBAT RESULT ⚔", content, true, ctx.Width, ctx.Height)
+	return ui.CenteredView("COMBAT RESULT", content, true, ctx.Width, ctx.Height)
 }
 
 // GameOverState handles player death
